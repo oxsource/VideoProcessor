@@ -20,14 +20,14 @@ public class VideoProgressAve {
         if (mListener == null) {
             return;
         }
-        if(mSpeed!=null){
-            timeStampUs = (long) (timeStampUs*mSpeed);
+        if (mSpeed != null) {
+            timeStampUs = (long) (timeStampUs * mSpeed);
         }
-        mEncodeProgress = (timeStampUs/1000f - mStartTimeMs)/(mEndTimeMs - mStartTimeMs);
-        mEncodeProgress = mEncodeProgress <0?0:mEncodeProgress;
-        mEncodeProgress = mEncodeProgress>1?1:mEncodeProgress;
+        mEncodeProgress = (timeStampUs / 1000f - mStartTimeMs) / (mEndTimeMs - mStartTimeMs);
+        mEncodeProgress = mEncodeProgress < 0 ? 0 : mEncodeProgress;
+        mEncodeProgress = mEncodeProgress > 1 ? 1 : mEncodeProgress;
         mListener.onProgress((mEncodeProgress + mAudioProgress) / 2);
-        CL.i("mEncodeProgress:"+mEncodeProgress);
+        CL.i("mEncodeProgress:" + mEncodeProgress);
     }
 
     public void setAudioProgress(float audioProgress) {
@@ -35,7 +35,7 @@ public class VideoProgressAve {
         if (mListener != null) {
             mListener.onProgress((mEncodeProgress + mAudioProgress) / 2);
         }
-        CL.i("mAudioProgress:"+mAudioProgress);
+        CL.i("mAudioProgress:" + mAudioProgress);
 
     }
 

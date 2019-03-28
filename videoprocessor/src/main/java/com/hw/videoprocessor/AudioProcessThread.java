@@ -23,7 +23,6 @@ public class AudioProcessThread extends Thread implements VideoProgressListener 
     private String mVidepPath;
     private Integer mStartTimeMs;
     private Integer mEndTimeMs;
-    private Float mSpeed;
     private Context mContext;
     private Exception mException;
     private MediaMuxer mMuxer;
@@ -34,15 +33,13 @@ public class AudioProcessThread extends Thread implements VideoProgressListener 
 
     public AudioProcessThread(Context context, String videoPath, MediaMuxer muxer,
                               @Nullable Integer startTimeMs, @Nullable Integer endTimeMs,
-                              @Nullable Float speed, int muxerAudioTrackIndex,
-                              CountDownLatch muxerStartLatch
+                              int muxerAudioTrackIndex, CountDownLatch muxerStartLatch
 
     ) {
         super("VideoProcessDecodeThread");
         mVidepPath = videoPath;
         mStartTimeMs = startTimeMs;
         mEndTimeMs = endTimeMs;
-        mSpeed = speed;
         mMuxer = muxer;
         mContext = context;
         mMuxerAudioTrackIndex = muxerAudioTrackIndex;
@@ -70,7 +67,7 @@ public class AudioProcessThread extends Thread implements VideoProgressListener 
             //处理音频
             mExtractor.selectTrack(audioTrackIndex);
             MediaFormat mediaFormat = mExtractor.getTrackFormat(audioTrackIndex);
-            String inputMimeType = mediaFormat.containsKey(MediaFormat.KEY_MIME)?mediaFormat.getString(MediaFormat.KEY_MIME):MediaFormat.MIMETYPE_AUDIO_AAC;
+            String inputMimeType = mediaFormat.containsKey(MediaFormat.KEY_MIME) ? mediaFormat.getString(MediaFormat.KEY_MIME) : MediaFormat.MIMETYPE_AUDIO_AAC;
             String outputMimeType = MediaFormat.MIMETYPE_AUDIO_AAC;
             //音频暂不支持变速
             Integer startTimeUs = mStartTimeMs == null ? null : mStartTimeMs * 1000;
@@ -79,12 +76,7 @@ public class AudioProcessThread extends Thread implements VideoProgressListener 
             if (!await) {
                 throw new TimeoutException("wait muxerStartLatch timeout!");
             }
-            if (mSpeed != null || !inputMimeType.equals(outputMimeType)) {
-                AudioUtil.writeAudioTrackDecode(mContext, mExtractor, mMuxer, mMuxerAudioTrackIndex, startTimeUs, endTimeUs,
-                        mSpeed==null?1f:mSpeed, this);
-            } else {
-                AudioUtil.writeAudioTrack(mExtractor, mMuxer, mMuxerAudioTrackIndex, startTimeUs, endTimeUs, this);
-            }
+            AudioUtil.writeAudioTrack(mExtractor, mMuxer, mMuxerAudioTrackIndex, startTimeUs, endTimeUs, this);
         }
         if (mProgressAve != null) {
             mProgressAve.setAudioProgress(1);

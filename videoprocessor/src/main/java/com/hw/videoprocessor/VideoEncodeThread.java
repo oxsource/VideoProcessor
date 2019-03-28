@@ -98,11 +98,12 @@ public class VideoEncodeThread extends Thread implements IVideoEncodeThread {
         boolean supportProfileHigh = VideoUtil.trySetProfileAndLevel(mEncoder, mimeType, outputFormat,
                 MediaCodecInfo.CodecProfileLevel.AVCProfileHigh,
                 MediaCodecInfo.CodecProfileLevel.AVCLevel31
+
         );
         if (supportProfileHigh) {
             CL.i("supportProfileHigh,enable ProfileHigh");
         }
-        int maxBitrate = VideoUtil.getMaxSupportBitrate(mEncoder,mimeType);
+        int maxBitrate = VideoUtil.getMaxSupportBitrate(mEncoder, mimeType);
         if (maxBitrate > 0 && mBitrate > maxBitrate) {
             CL.e(mBitrate + " bitrate too large,set to:" + maxBitrate);
             mBitrate = (int) (maxBitrate * 0.8f);//直接设置最大值小米2报错
@@ -110,9 +111,6 @@ public class VideoEncodeThread extends Thread implements IVideoEncodeThread {
         outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, mBitrate);
         mEncoder.configure(outputFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         mSurface = mEncoder.createInputSurface();
-
-//        mInputSurface = new InputSurface(encodeSurface);
-//        mInputSurface.makeCurrent();
         mEncoder.start();
         mEglContextLatch.countDown();
 
