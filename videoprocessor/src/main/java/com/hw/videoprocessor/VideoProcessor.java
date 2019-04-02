@@ -51,7 +51,7 @@ public class VideoProcessor {
      */
     public static boolean AUDIO_MIX_REPEAT = true;
 
-    final static int TIMEOUT_USEC = 2500;
+    public static int TIMEOUT_USEC = 2500;
 
 
     public static void scaleVideo(Context context, String input, String output,
